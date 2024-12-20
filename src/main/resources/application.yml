@@ -1,0 +1,36 @@
+
+spring:
+  application:
+    name: kafkaSample
+  cloud:
+    function:
+      definition: sampleKafkaProducer;sampleKafkaConsumer
+    stream:
+      bindings:
+        sampleKafkaProducer-out-0:
+          destination: batch-in
+        sampleKafkaConsumer-in-0:
+          destination: batch-in
+          group: ${spring.application.name}
+      kafka:
+        binder:
+          brokers: localhost:9092
+          enable-observation: true
+
+  integration:
+    poller:
+      fixedDelay: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles:
+        all: "0.5,0.75,0.95,0.99"
